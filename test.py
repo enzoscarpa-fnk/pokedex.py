@@ -18,4 +18,8 @@ while pygame.mixer.music.get_busy():
 print("done")
 
 
-#  ------------------
+# SEARCH FUNCTION ------------------
+
+c.execute("SELECT * FROM Kanto WHERE Pokemon_Name = '{}'".format(sv_search.get()))
+result = c.fetchone()
+print(result[2])
