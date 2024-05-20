@@ -1,7 +1,7 @@
 """
 Pokédex
 __author__ = 'FNK'
-__version__ = '0.4'
+__version__ = '0.5'
 """
 
 import sqlite3
@@ -10,6 +10,7 @@ import tkinter as tk
 import pygame
 import pygame.mixer
 import pyglet
+import textwrap
 from time import sleep
 from tkinter import *
 from PIL import Image, ImageTk
@@ -194,7 +195,7 @@ c.executemany('INSERT INTO Kanto (Pokemon_Index, Pokemon_Name, Pokemon_Category,
 
 root = tkb.Window(title='Pokédex', resizable=(tkb.NO, tkb.NO))
 #root.geometry("350x370+1000+150") #definitive
-root.geometry("350x440+1000+150") #temporary
+root.geometry("350x385+1000+150") #temporary
 
 ico = Image.open('/Users/fnk/PycharmProjects/Pokedex/src/sprites/appicon.png')
 appicon = ImageTk.PhotoImage(ico)
@@ -203,7 +204,7 @@ root.wm_iconphoto(False, appicon)
 pyglet.font.add_file('/Users/fnk/PycharmProjects/Pokedex/src/pokemon.ttf')
 
 
-# ENGINE -------------------------------------
+# VARIABLES -------------------------------------
 
 c.execute("SELECT * FROM Kanto")
 data = c.fetchall()
@@ -222,8 +223,27 @@ sv_pokemon_weight = tkb.StringVar(value="6.9kg")
 sv_pokemon_description = tkb.StringVar(value="Il a une étrange graine plantée sur son dos. Elle grandit avec lui depuis la naissance.")
 sv_pokemon_spritepath = tkb.StringVar(value="/Users/fnk/PycharmProjects/Pokedex/src/sprites/001.png")
 sv_pokemon_crypath = tkb.StringVar(value="/Users/fnk/PycharmProjects/Pokedex/src/sound/001.wav")
+
+sv_pokemon_description_p1 = tkb.StringVar(value="")
+sv_pokemon_description_p2 = tkb.StringVar(value="")
+current_page = 1
+
 music_playing = 1
 
+icn_up = PhotoImage(file=r'/Users/fnk/PycharmProjects/Pokedex/src/sprites/up.png')
+icn_down = PhotoImage(file=r'/Users/fnk/PycharmProjects/Pokedex/src/sprites/down.png')
+icn_previous = PhotoImage(file=r'/Users/fnk/PycharmProjects/Pokedex/src/sprites/previous.png')
+icn_next = PhotoImage(file=r'/Users/fnk/PycharmProjects/Pokedex/src/sprites/next.png')
+icn_m_toggle_src = PhotoImage(file=r'/Users/fnk/PycharmProjects/Pokedex/src/sprites/stop.png')
+icn_search = PhotoImage(file=r'/Users/fnk/PycharmProjects/Pokedex/src/sprites/search.png')
+separator_img = Image.open('/Users/fnk/PycharmProjects/Pokedex/src/sprites/separator.png')
+separator_imgsize = separator_img.resize((350, 14))
+separator_imgpi = ImageTk.PhotoImage(separator_imgsize)
+
+
+# ENGINE -------------------------------------
+
+# COMMANDS -------------------------------------
 
 def caps(event):
     sv_search.set(sv_search.get().upper())
@@ -241,6 +261,108 @@ def key_right(event):
     go_next()
 
 
+def key_down(event):
+    if current_page == 1:
+        if sv_pokemon_description_p2.get() != "":
+            destroy_btn_down()
+            display_page(2)
+        else:
+            pass
+
+
+def key_up(event):
+    if current_page == 2:
+        destroy_btn_up()
+        display_page(1)
+
+
+# DESCRIPTION HANDLING --------------------------
+
+
+def process_desc():
+    desc = sv_pokemon_description.get()
+    words = desc.split()
+    buffer_p1, buffer_p2 = [], []
+    current_line_length = 0
+    current_line = 1
+    max_chars_per_line = 24
+    max_lines_page1 = 3
+
+    for word in words:
+        spaced_word = word + " "
+        word_length = len(spaced_word)
+
+        if current_line_length + word_length > max_chars_per_line:
+            current_line += 1
+            current_line_length = 0
+
+        if current_line > max_lines_page1:
+            buffer_p2.append(spaced_word)
+        else:
+            buffer_p1.append(spaced_word)
+
+        current_line_length += word_length
+
+    p1 = "".join(buffer_p1).strip()
+    p2 = "".join(buffer_p2).strip()
+
+    sv_pokemon_description_p1.set(p1)
+    sv_pokemon_description_p2.set(p2)
+
+    display_page(1)
+
+
+
+def display_page(page_number):
+    global pokemon_description, current_page
+    current_page = page_number
+
+    destroy_btn_down()
+    destroy_btn_up()
+    pokemon_description.destroy()
+
+    current_desc = sv_pokemon_description_p1 if page_number == 1 else sv_pokemon_description_p2
+
+    pokemon_description = tkb.Label(root, textvariable=current_desc, wraplength=325, font=('Pokémon Red/Blue/Green/Yellow Edition Font', 28))
+    pokemon_description.place(x=15, y=170)
+
+    if page_number == 1 and len(sv_pokemon_description_p2.get()) > 0:
+        show_btn_down()
+    elif page_number == 2:
+        show_btn_up()
+    else:
+        destroy_btn_down()
+
+
+def destroy_btn_up():
+    global btn_up
+    if btn_up:
+        btn_up.destroy()
+
+
+def destroy_btn_down():
+    global btn_down
+    if btn_down:
+        btn_down.destroy()
+
+
+def show_btn_down():
+    global btn_down
+    btn_down = tk.Button(root, image=icn_down, autostyle=False, command=lambda: display_page(2))
+    btn_down.place(x=320, y=255, width=16, height=16)
+    root.bind("<Down>", key_down)
+
+
+def show_btn_up():
+    global btn_up
+    btn_up = tk.Button(root, image=icn_up, autostyle=False, command=lambda: display_page(1))
+    btn_up.place(x=320, y=170, width=16, height=16)
+    root.bind("<Up>", key_up)
+
+
+# POKEMON INFO GATHERING AND DISPLAY ------------
+
+
 def display(index):
     global current_index
     if 0 <= index < rows_nb:
@@ -254,6 +376,7 @@ def display(index):
         sv_pokemon_spritepath.set(current_entry[7])
         sv_pokemon_crypath.set(current_entry[8])
         display_sprite()
+        process_desc()
         current_index = index
 
 
@@ -283,6 +406,9 @@ def go_next():
         display(current_index)
 
 
+# SEARCH, CRY AND ZONE OPTIONS -------------------------------------
+
+
 def char_limit(*args):
     limit = sv_search.get()
     if len(limit) > 10:
@@ -298,6 +424,16 @@ def search():
     if result is not None:
         pk_index = result[0]-1
         display(pk_index)
+    elif sv_search.get() == "NIDORANF":
+        c.execute("SELECT * FROM Kanto WHERE Pokemon_Index = '029'".format(sv_search.get()))
+        result = c.fetchone()
+        pk_index = result[0]-1
+        display(pk_index)
+    elif sv_search.get() == "NIDORANM":
+        c.execute("SELECT * FROM Kanto WHERE Pokemon_Index = '032'".format(sv_search.get()))
+        result = c.fetchone()
+        pk_index = result[0]-1
+        display(pk_index)
     else:
         sv_search.set("NO DATA")
 
@@ -306,7 +442,6 @@ def play_cry(event):
     cry_path = pygame.mixer.Sound(sv_pokemon_crypath.get())
     cry_path.play()
     cry_length = cry_path.get_length()
-    print(cry_length)
     pygame.mixer.music.set_volume(0)
     sleep(cry_length)
     pygame.mixer.music.set_volume(100)
@@ -314,6 +449,9 @@ def play_cry(event):
 
 def show_zone(event):
     print("zone")
+
+
+# AUDIO ENGINE -------------------------------------
 
 
 def music_toggle(event):
@@ -376,56 +514,60 @@ pokemon_index_lbl.place(x=70, y=115)
 pokemon_index = tkb.Label(root, textvariable=sv_pokemon_index, font=('Pokémon Red/Blue/Green/Yellow Edition Font', 28))
 pokemon_index.place(x=90, y=112)
 
-pokemon_description = tkb.Label(root, textvariable=sv_pokemon_description, wraplength=325, font=('Pokémon Red/Blue/Green/Yellow Edition Font', 28))
+description = textwrap.wrap(text=sv_pokemon_description.get(), width=33, break_long_words=True, max_lines=3)
+
+pokemon_description = tkb.Label(root, textvariable=description, wraplength=325, font=('Pokémon Red/Blue/Green/Yellow Edition Font', 28))
 pokemon_description.place(x=15, y=170)
 
-separator1_img = Image.open('/Users/fnk/PycharmProjects/Pokedex/src/sprites/separator.png')
-separator1_imgsize = separator1_img.resize((350, 14))
-separator1_imgpi = ImageTk.PhotoImage(separator1_imgsize)
-separator1_sprite = tkb.Label(root, image=separator1_imgpi)
-separator1_sprite.image = separator1_imgpi
+btn_down = tk.Button(root)
+btn_down.place(x=320, y=255, width=16, height=16)
+root.bind("<Down>", key_down)
+
+btn_up = tk.Button(root)
+btn_up.place(x=320, y=170, width=16, height=16)
+root.bind("<Up>", key_up)
+
+display_page(1)
+
+process_desc()
+
+separator1_sprite = tkb.Label(root, image=separator_imgpi)
+separator1_sprite.image = separator_imgpi
 separator1_sprite.place(x=0, y=150)
 
-separator2_img = Image.open('/Users/fnk/PycharmProjects/Pokedex/src/sprites/separator.png')
-separator2_imgsize = separator2_img.resize((350, 14))
-separator2_imgpi = ImageTk.PhotoImage(separator2_imgsize)
-separator2_sprite = tkb.Label(root, image=separator2_imgpi)
-separator2_sprite.image = separator2_imgpi
-separator2_sprite.place(x=0, y=333)
+separator2_sprite = tkb.Label(root, image=separator_imgpi)
+separator2_sprite.image = separator_imgpi
+separator2_sprite.place(x=0, y=275)
 
 
 # OPTIONS, SEARCH & NAVIGATION -------------------------
 
-icn_m_toggle_src = PhotoImage(file=r'/Users/fnk/PycharmProjects/Pokedex/src/sprites/stop.png')
 icn_m_toggle = tkb.Label(root, image=icn_m_toggle_src)
 icn_m_toggle.place(x=10, y=10, width=24, height=24)
 icn_m_toggle.bind("<Button-1>", music_toggle)
 
 south_search = tkb.Label(root, text='RECHERCHE', font=('Pokémon Red/Blue/Green/Yellow Edition Font', 30))
-south_search.place(x=15, y=350)
-icn_search = PhotoImage(file=r'/Users/fnk/PycharmProjects/Pokedex/src/sprites/search.png')
+south_search.place(x=15, y=295)
 btn_search = tk.Button(root, image=icn_search, autostyle=False, command=search)
-btn_search.place(x=160, y=365, width=16, height=16)
+btn_search.place(x=160, y=310, width=16, height=16)
 root.bind("<Return>", key_return)
 en_search = tkb.Entry(root, textvariable=sv_search, bootstyle='dark', state="normal", font=('Pokémon Red/Blue/Green/Yellow Edition Font', 30))
-en_search.place(x=15, y=385, width=170, height=40)
+en_search.place(x=15, y=330, width=170, height=40)
 en_search.bind("<KeyRelease>", caps)
 
-icn_previous = PhotoImage(file=r'/Users/fnk/PycharmProjects/Pokedex/src/sprites/previous.png')
 btn_previous = tk.Button(root, image=icn_previous, autostyle=False, command=go_previous)
-btn_previous.place(x=200, y=365, width=16, height=16)
+btn_previous.place(x=200, y=310, width=16, height=16)
 root.bind("<Left>", key_left)
 south_nav = tkb.Label(root, text='NAVIG.', font=('Pokémon Red/Blue/Green/Yellow Edition Font', 30))
-south_nav.place(x=225, y=350)
-icn_next = PhotoImage(file=r'/Users/fnk/PycharmProjects/Pokedex/src/sprites/next.png')
+south_nav.place(x=225, y=295)
 btn_next = tk.Button(root, image=icn_next, autostyle=False, command=go_next)
-btn_next.place(x=320, y=365, width=16, height=16)
+btn_next.place(x=320, y=310, width=16, height=16)
 root.bind("<Right>", key_right)
 btn_cry = tkb.Label(root, text='CRI', font=('Pokémon Red/Blue/Green/Yellow Edition Font', 30))
-btn_cry.place(x=200, y=388)
+btn_cry.place(x=200, y=333)
 btn_cry.bind("<Button-1>", play_cry)
 btn_zone = tkb.Label(root, text='ZONE', font=('Pokémon Red/Blue/Green/Yellow Edition Font', 30))
-btn_zone.place(x=270, y=388)
+btn_zone.place(x=270, y=333)
 btn_zone.bind("<Button-1>", show_zone)
 
 
