@@ -1,7 +1,7 @@
 """
 Pokédex
 __author__ = 'FNK'
-__version__ = '0.5b'
+__version__ = '0.6'
 """
 
 import sqlite3
@@ -15,9 +15,9 @@ from tkinter import *
 from PIL import Image, ImageTk
 
 
-# POKEMON VALUES FOR DATABASE --------------------
+#  POKEMON VALUES FOR DATABASE --------------------
 
-pokedex_data = [('001', 'BULBIZARRE', 'GRAINE', '0.7m', '6.9kg', "Il a une étrange graine plantée sur son dos. Elle grandit avec lui depuis la naissance.", 'src/sprites/001.png', 'src/sound/001.wav'),
+"""pokedex_data = [('001', 'BULBIZARRE', 'GRAINE', '0.7m', '6.9kg', "Il a une étrange graine plantée sur son dos. Elle grandit avec lui depuis la naissance.", 'src/sprites/001.png', 'src/sound/001.wav'),
 ('002', 'HERBIZARRE', 'GRAINE', '1.0m', '13.0kg', "Son bulbe dorsal devient si gros qu'il ne peut plus se tenir sur ses membres postérieurs.", 'src/sprites/002.png', 'src/sound/002.wav'),
 ('003', 'FLORIZARRE', 'GRAINE', '2.0m', '100.0kg', "Sa plante mûrit en absorbant les rayons du soleil. Il migre souvent vers les endroits ensoleillés.", 'src/sprites/003.png', 'src/sound/003.wav'),
 ('004', 'SALAMECHE', 'LEZARD', '0.6m', '8.5kg', "Il préfère les endroits chauds. En cas de pluie, de la vapeur se forme autour de sa queue.", 'src/sprites/004.png', 'src/sound/004.wav'),
@@ -169,11 +169,415 @@ pokedex_data = [('001', 'BULBIZARRE', 'GRAINE', '0.7m', '6.9kg', "Il a une étra
 ('150', 'MEWTWO', 'GENETIQUE', '2.0m', '122.0kg', "Il est le fruit de nombreuses expériences génétiques horribles et malsaines.", 'src/sprites/150.png', 'src/sound/150.wav'),
 ('151', 'MEW', 'NOUVEAU', '0.4m', '4.0kg', "Unique et rare, son existence est remise en cause par les experts. Peu nombreux sont ceux qui l'ont vu.", 'src/sprites/151.png', 'src/sound/151.wav')]
 
+pokenest = [('001', ''),
+            ('002', ''),
+            ('003', ''),
+            ('004', ''),
+            ('005', ''),
+            ('006', ''),
+            ('007', ''),
+            ('008', ''),
+            ('009', ''),
+            ('010', 'Route_2'),
+            ('010', 'Route_24'),
+            ('010', 'Route_25'),
+            ('010', 'Foret_de_Jade'),
+            ('011', 'Route_24'),
+            ('011', 'Route_25'),
+            ('011', 'Foret_de_Jade'),
+            ('012', ''),
+            ('013', 'Route_2'),
+            ('013', 'Route_24'),
+            ('013', 'Route_25'),
+            ('013', 'Foret_de_Jade'),
+            ('014', 'Route_24'),
+            ('014', 'Route_25'),
+            ('014', 'Foret_de_Jade'),
+            ('015', ''),
+            ('016', 'Route_1'),
+            ('016', 'Route_2'),
+            ('016', 'Route_3'),
+            ('016', 'Route_5'),
+            ('016', 'Route_6'),
+            ('016', 'Route_7'),
+            ('016', 'Route_8'),
+            ('016', 'Route_12'),
+            ('016', 'Route_13'),
+            ('016', 'Route_14'),
+            ('016', 'Route_15'),
+            ('016', 'Chenal_21'),
+            ('016', 'Route_24'),
+            ('016', 'Route_25'),
+            ('017', 'Route_14'),
+            ('017', 'Route_15'),
+            ('017', 'Chenal_21'),
+            ('018', ''),
+            ('019', 'Route_1'),
+            ('019', 'Route_2'),
+            ('019', 'Route_4'),
+            ('019', 'Route_9'),
+            ('019', 'Route_16'),
+            ('019', 'Chenal_21'),
+            ('019', 'Route_22'),
+            ('020', 'Route_16'),
+            ('020', 'Route_17'),
+            ('020', 'Route_18'),
+            ('020', 'Chenal_21'),
+            ('021', 'Route_3'),
+            ('021', 'Route_4'),
+            ('021', 'Route_9'),
+            ('021', 'Route_10'),
+            ('021', 'Route_11'),
+            ('021', 'Route_16'),
+            ('021', 'Route_17'),
+            ('021', 'Route_18'),
+            ('021', 'Route_22'),
+            ('021', 'Route_23'),
+            ('022', 'Route_17'),
+            ('022', 'Route_18'),
+            ('022', 'Route_23'),
+            ('023', 'Route_4'),
+            ('023', 'Route_8'),
+            ('023', 'Route_9'),
+            ('023', 'Route_10'),
+            ('023', 'Route_11'),
+            ('023', 'Route_23'),
+            ('024', 'Route_23'),
+            ('024', 'Grotte_Inconnue'),
+            ('025', 'Centrale'),
+            ('025', 'Foret_de_Jade'),
+            ('026', 'Centrale'),
+            ('026', 'Grotte_Inconnue'),
+            ('027', 'Route_4'),
+            ('027', 'Route_8'),
+            ('027', 'Route_9'),
+            ('027', 'Route_10'),
+            ('027', 'Route_11'),
+            ('027', 'Route_23'),
+            ('028', 'Route_23'),
+            ('028', 'Grotte_Inconnue'),
+            ('029', 'Route_5'),
+            ('029', 'Route_22'),
+            ('029', 'Parc_Safari'),
+            ('030', 'Route_11'),
+            ('030', 'Parc_Safari'),
+            ('031', ''),
+            ('032', 'Route_22'),
+            ('032', 'Parc_Safari'),
+            ('033', 'Parc_Safari'),
+            ('034', ''),
+            ('035', 'Mont_Selenite'),
+            ('036', ''),
+            ('037', 'Route_7'),
+            ('037', 'Route_8'),
+            ('037', 'Manoir_Pokemon'),
+            ('038', ''),
+            ('039', 'Route_3'),
+            ('040', 'Grotte_Inconnue'),
+            ('041', 'Grotte'),
+            ('041', 'Iles_Ecume'),
+            ('041', 'Mont_Selenite'),
+            ('041', 'Route_Victoire'),
+            ('042', 'Iles_Ecume'),
+            ('042', 'Grotte_Inconnue'),
+            ('042', 'Route_Victoire'),
+            ('043', 'Route_5'),
+            ('043', 'Route_6'),
+            ('043', 'Route_7'),
+            ('043', 'Route_12'),
+            ('043', 'Route_13'),
+            ('043', 'Route_14'),
+            ('043', 'Route_15'),
+            ('043', 'Route_24'),
+            ('043', 'Route_25'),
+            ('044', 'Route_12'),
+            ('044', 'Route_13'),
+            ('044', 'Route_14'),
+            ('044', 'Route_15'),
+            ('045', ''),
+            ('046', 'Mont_Selenite'),
+            ('046', 'Parc_Safari'),
+            ('047', 'Grotte_Inconnue'),
+            ('047', 'Parc_Safari'),
+            ('048', 'Route_12'),
+            ('048', 'Route_13'),
+            ('048', 'Route_14'),
+            ('048', 'Route_15'),
+            ('048', 'Parc_Safari'),
+            ('049', 'Grotte_Inconnue'),
+            ('049', 'Parc_Safari'),
+            ('049', 'Route_Victoire'),
+            ('050', 'Cave_Taupiqueur'),
+            ('051', 'Cave_Taupiqueur'),
+            ('052', 'Route_5'),
+            ('052', 'Route_6'),
+            ('052', 'Route_7'),
+            ('052', 'Route_8'),
+            ('053', ''),
+            ('054', 'Route_24'),
+            ('054', 'Route_25'),
+            ('054', 'Iles_Ecume'),
+            ('054', 'Parc_Safari'),
+            ('055', 'Iles_Ecume'),
+            ('056', 'Route_5'),
+            ('056', 'Route_6'),
+            ('056', 'Route_7'),
+            ('056', 'Route_8'),
+            ('057', ''),
+            ('058', 'Route_7'),
+            ('058', 'Route_8'),
+            ('058', 'Manoir_Pokemon'),
+            ('059', ''),
+            ('060', 'Route_6'),
+            ('060', 'Route_10'),
+            ('060', 'Route_11'),
+            ('060', 'Route_12'),
+            ('060', 'Route_13'),
+            ('060', 'Route_17'),
+            ('060', 'Route_18'),
+            ('060', 'Chenal_19'),
+            ('060', 'Chenal_20'),
+            ('060', 'Chenal_21'),
+            ('060', 'Route_22'),
+            ('060', 'Route_23'),
+            ('060', 'Route_24'),
+            ('060', 'Route_25'),
+            ('060', 'Grotte_Inconnue'),
+            ('060', 'Iles_Ecume'),
+            ('060', 'Parc_Safari'),
+            ('061', 'Route_10'),
+            ('062', ''),
+            ('063', 'Route_24'),
+            ('063', 'Route_25'),
+            ('064', 'Grotte_Inconnue'),
+            ('065', ''),
+            ('066', 'Grotte'),
+            ('066', 'Route_Victoire'),
+            ('067', 'Route_Victoire'),
+            ('068', ''),
+            ('069', 'Route_5'),
+            ('069', 'Route_6'),
+            ('069', 'Route_7'),
+            ('069', 'Route_12'),
+            ('069', 'Route_13'),
+            ('069', 'Route_14'),
+            ('069', 'Route_15'),
+            ('069', 'Route_24'),
+            ('069', 'Route_25'),
+            ('070', 'Route_12'),
+            ('070', 'Route_13'),
+            ('070', 'Route_14'),
+            ('070', 'Route_15'),
+            ('071', ''),
+            ('072', 'Route_12'),
+            ('072', 'Route_13'),
+            ('072', 'Route_17'),
+            ('072', 'Route_18'),
+            ('072', 'Chenal_19'),
+            ('072', 'Chenal_20'),
+            ('072', 'Chenal_21'),
+            ('073', ''),
+            ('074', 'Grotte'),
+            ('074', 'Mont_Selenite'),
+            ('074', 'Route_Victoire'),
+            ('075', 'Route_Victoire'),
+            ('076', ''),
+            ('077', 'Manoir_Pokemon'),
+            ('078', ''),
+            ('079', 'Route_10'),
+            ('079', 'Iles_Ecume'),
+            ('079', 'Parc_Safari'),
+            ('080', 'Route_23'),
+            ('080', 'Iles_Ecume'),
+            ('080', 'Grotte_Inconnue'),
+            ('081', 'Centrale'),
+            ('082', 'Centrale'),
+            ('082', 'Grotte_Inconnue'),
+            ('083', ''),
+            ('084', 'Route_16'),
+            ('084', 'Route_17'),
+            ('084', 'Route_18'),
+            ('084', 'Parc_Safari'),
+            ('085', 'Grotte_Inconnue'),
+            ('086', 'Iles_Ecume'),
+            ('087', 'Iles_Ecume'),
+            ('088', 'Manoir_Pokemon'),
+            ('089', 'Manoir_Pokemon'),
+            ('090', 'Route_6'),
+            ('090', 'Route_11'),
+            ('090', 'Chenal_19'),
+            ('090', 'Chenal_20'),
+            ('090', 'Chenal_21'),
+            ('090', 'Iles_Ecume'),
+            ('091', ''),
+            ('092', 'Tour_Pokemon'),
+            ('093', 'Tour_Pokemon'),
+            ('094', ''),
+            ('095', 'Grotte'),
+            ('095', 'Route_Victoire'),
+            ('096', 'Route_11'),
+            ('097', 'Grotte_Inconnue'),
+            ('098', 'Route_6'),
+            ('098', 'Route_11'),
+            ('098', 'Route_12'),
+            ('098', 'Route_13'),
+            ('098', 'Route_17'),
+            ('098', 'Route_18'),
+            ('098', 'Route_24'),
+            ('098', 'Route_25'),
+            ('098', 'Iles_Ecume'),
+            ('098', 'Parc_Safari'),
+            ('099', 'Route_23'),
+            ('099', 'Grotte_Inconnue'),
+            ('099', 'Iles_Ecume'),
+            ('100', 'Route_10'),
+            ('100', 'Centrale'),
+            ('101', 'Centrale'),
+            ('101', 'Grotte_Inconnue'),
+            ('102', 'Parc_Safari'),
+            ('103', ''),
+            ('104', 'Tour_Pokemon'),
+            ('105', 'Grotte_Inconnue'),
+            ('105', 'Route_Victoire'),
+            ('106', ''),
+            ('107', ''),
+            ('108', 'Route_18'),
+            ('109', 'Manoir_Pokemon'),
+            ('110', 'Manoir_Pokemon'),
+            ('111', 'Parc_Safari'),
+            ('112', 'Grotte_Inconnue'),
+            ('113', 'Grotte_Inconnue'),
+            ('113', 'Parc_Safari'),
+            ('114', 'Chenal_21'),
+            ('115', 'Parc_Safari'),
+            ('116', 'Chenal_19'),
+            ('116', 'Chenal_20'),
+            ('116', 'Chenal_21'),
+            ('116', 'Iles_Ecume'),
+            ('117', 'Route_23'),
+            ('117', 'Grotte_Inconnue'),
+            ('117', 'Iles_Ecume'),
+            ('118', 'Route_6'),
+            ('118', 'Route_10'),
+            ('118', 'Route_11'),
+            ('118', 'Route_12'),
+            ('118', 'Route_13'),
+            ('118', 'Route_17'),
+            ('118', 'Route_18'),
+            ('118', 'Chenal_19'),
+            ('118', 'Chenal_20'),
+            ('118', 'Chenal_21'),
+            ('118', 'Route_22'),
+            ('118', 'Route_23'),
+            ('118', 'Route_24'),
+            ('118', 'Route_25'),
+            ('118', 'Grotte_Inconnue'),
+            ('118', 'Iles_Ecume'),
+            ('118', 'Parc_Safari'),
+            ('119', 'Route_23'),
+            ('119', 'Grotte_Inconnue'),
+            ('120', 'Chenal_19'),
+            ('120', 'Chenal_20'),
+            ('120', 'Chenal_21'),
+            ('120', 'Iles_Ecume'),
+            ('121', ''),
+            ('122', ''),
+            ('123', 'Parc_Safari'),
+            ('124', ''),
+            ('125', 'Centrale'),
+            ('126', 'Manoir_Pokemon'),
+            ('127', 'Parc_Safari'),
+            ('128', 'Parc_Safari'),
+            ('129', 'Route_4'),
+            ('129', 'Route_6'),
+            ('129', 'Route_10'),
+            ('129', 'Route_11'),
+            ('129', 'Route_12'),
+            ('129', 'Route_13'),
+            ('129', 'Route_17'),
+            ('129', 'Route_18'),
+            ('129', 'Chenal_19'),
+            ('129', 'Chenal_20'),
+            ('129', 'Chenal_21'),
+            ('129', 'Route_22'),
+            ('129', 'Route_23'),
+            ('129', 'Route_24'),
+            ('129', 'Route_25'),
+            ('129', 'Grotte_Inconnue'),
+            ('129', 'Iles_Ecume'),
+            ('129', 'Parc_Safari'),
+            ('130', ''),
+            ('131', ''),
+            ('132', 'Route_13'),
+            ('132', 'Route_14'),
+            ('132', 'Route_15'),
+            ('132', 'Route_23'),
+            ('132', 'Grotte_Inconnue'),
+            ('133', ''),
+            ('134', ''),
+            ('135', ''),
+            ('136', ''),
+            ('137', ''),
+            ('138', ''),
+            ('139', ''),
+            ('140', ''),
+            ('141', ''),
+            ('142', ''),
+            ('143', ''),
+            ('144', ''),
+            ('145', ''),
+            ('146', ''),
+            ('147', 'Parc_Safari'),
+            ('148', ''),
+            ('149', ''),
+            ('150', ''),
+            ('151', '')]
 
-# DATABASE CREATION ----------------------------
+pokezone = [('Cave_Taupiqueur', '97', '104'),
+            ('Centrale', '307', '104'),
+            ('Foret_de_Jade', '79', '104'),
+            ('Grotte', '289', '87'),
+            ('Grotte_Inconnue', '202', '52'),
+            ('Iles_Ecume', '132', '297'),
+            ('Manoir_Pokemon', '79', '297'),
+            ('Mont_Selenite', '149', '69'),
+            ('Parc_Safari', '184', '244'),
+            ('Route_1', '79', '209'),
+            ('Route_2', '79', '139'),
+            ('Route_3', '114', '87'),
+            ('Route_4', '184', '69'),
+            ('Route_5', '219', '87'),
+            ('Route_6', '219', '174'),
+            ('Route_7', '184', '122'),
+            ('Route_8', '272', '122'),
+            ('Route_9', '272', '69'),
+            ('Route_10', '289', '104'),
+            ('Route_11', '254', '192'),
+            ('Route_12', '289', '192'),
+            ('Route_13', '272', '227'),
+            ('Route_14', '237', '244'),
+            ('Route_15', '219', '262'),
+            ('Route_16', '132', '122'),
+            ('Route_17', '114', '174'),
+            ('Route_18', '149', '262'),
+            ('Chenal_19', '149', '297'),
+            ('Chenal_20', '114', '297'),
+            ('Chenal_21', '79', '262'),
+            ('Route_22', '79', '174'),
+            ('Route_23', '79', '139'),
+            ('Route_24', '219', '52'),
+            ('Route_25', '237', '34'),
+            ('Route_Victoire', '79', '104'),
+            ('Tour_Pokemon', '307', '122')]"""
+
+
+#  DATABASE CREATION ----------------------------
 
 db = sqlite3.connect('pokedex.db')
 c = db.cursor()
+
+
+#  POKEMON INFORMATIONS -------------------------
 
 #c.execute("""CREATE TABLE Kanto (
 #    PK_Index INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -187,10 +591,34 @@ c = db.cursor()
 #    Pokemon_CryPath TEXT
 #);""")
 
-c.executemany('INSERT INTO Kanto (Pokemon_Index, Pokemon_Name, Pokemon_Category, Pokemon_Height, Pokemon_Weight, Pokemon_Description, Pokemon_SpritePath, Pokemon_CryPath) VALUES (?,?,?,?,?,?,?,?)', pokedex_data)
+#c.executemany('INSERT INTO Kanto (Pokemon_Index, Pokemon_Name, Pokemon_Category, Pokemon_Height, Pokemon_Weight, Pokemon_Description, Pokemon_SpritePath, Pokemon_CryPath) VALUES (?,?,?,?,?,?,?,?)', pokedex_data)
 
 
-# TKINTER CONFIGURATION -----------------------
+#  NESTS / WHERE DO POKEMON POP --------------------
+
+#c.execute("""CREATE TABLE Kanto_Nest (
+#    PK_Index INTEGER PRIMARY KEY AUTOINCREMENT,
+#    Pokemon_Index TEXT,
+#    Pokemon_Nest_Zone TEXT
+#);""")
+
+#c.executemany('INSERT INTO Kanto_Nest (Pokemon_Index, Pokemon_Nest_Zone) VALUES (?,?)', pokenest)
+
+
+#  ZONES / WHERE DO ZONES SITS ON THE MAP ----------
+
+#c.execute("""CREATE TABLE Kanto_Zone (
+#    ZN_Index INTEGER PRIMARY KEY AUTOINCREMENT,
+#    Nest_Zone TEXT,
+#    Nest_X TEXT,
+#    Nest_Y TEXT
+#);""")
+
+#c.executemany('INSERT INTO Kanto_Zone (Nest_Zone, Nest_X, Nest_Y) VALUES (?,?,?)', pokezone)
+#db.commit()
+
+
+#  TKINTER CONFIGURATION -----------------------
 
 root = tkb.Window(title='Pokédex', resizable=(tkb.NO, tkb.NO))
 #root.geometry("350x370+1000+150") #definitive
@@ -203,7 +631,7 @@ root.wm_iconphoto(False, appicon)
 pyglet.font.add_file('src/pokemon.ttf')
 
 
-# VARIABLES -------------------------------------
+#  VARIABLES -------------------------------------
 
 c.execute("SELECT * FROM Kanto")
 data = c.fetchall()
@@ -237,14 +665,17 @@ icn_previous = PhotoImage(file=r'src/sprites/previous.png')
 icn_next = PhotoImage(file=r'src/sprites/next.png')
 icn_m_toggle_src = PhotoImage(file=r'src/sprites/stop.png')
 icn_search = PhotoImage(file=r'src/sprites/search.png')
+nest_icn = PhotoImage(file="src/sprites/nest.png")
+map = PhotoImage(file="src/sprites/map.png")
+area_unknown = PhotoImage(file="src/sprites/area_unknown.png")
 separator_img = Image.open('src/sprites/separator.png')
 separator_imgsize = separator_img.resize((350, 14))
 separator_imgpi = ImageTk.PhotoImage(separator_imgsize)
 
 
-# ENGINE -------------------------------------
+#  ENGINE -------------------------------------
 
-# COMMANDS -------------------------------------
+#  COMMANDS -------------------------------------
 
 def caps(event):
     sv_search.set(sv_search.get().upper())
@@ -255,7 +686,8 @@ def key_return(event):
 
 
 def key_esc(event):
-    print("Escape key pressed")
+    global on
+    on = 0
     destroy_canvas()
 
 
@@ -294,8 +726,7 @@ def key_up(event):
         pass
 
 
-# DESCRIPTION HANDLING --------------------------
-
+#  DESCRIPTION HANDLING --------------------------
 
 def process_desc():
     desc = sv_pokemon_description.get()
@@ -377,8 +808,7 @@ def show_btn_up():
     root.bind("<Up>", key_up)
 
 
-# POKEMON INFO GATHERING AND DISPLAY ------------
-
+#  POKEMON INFO GATHERING AND DISPLAY ------------
 
 def display(index):
     global current_index
@@ -423,8 +853,7 @@ def go_next():
         display(current_index)
 
 
-# SEARCH, CRY AND ZONE OPTIONS -------------------------------------
-
+#  SEARCH, CRY AND ZONE OPTIONS -------------------------------------
 
 def char_limit(*args):
     limit = sv_search.get()
@@ -454,6 +883,8 @@ def search():
         pk_index = result[0]-1
         display(pk_index)
         sv_search.set("")
+    elif sv_search.get() == "MISSINGNO":
+        missingno()
     else:
         sv_search.set("NO DATA")
 
@@ -473,7 +904,6 @@ def show_zone(event):
 
     cnv = Canvas(root, width=350, height=385)
     cnv.pack()
-    map = PhotoImage(file="src/sprites/map.png")
 
     nest_label = tkb.Label(root, text="NID DE ", font=('Pokémon Red/Blue/Green/Yellow Edition Font', 30))
     nest_label.place(x=5, y=-10)
@@ -483,6 +913,43 @@ def show_zone(event):
     cnv.map = map
     cnv.create_image(0, 25, anchor=NW, image=map)
     root.bind("<Escape>", key_esc)
+    show_nest()
+
+
+def show_nest():
+    global cnv, on
+    on = 1
+    id = -1
+    map_blink = None
+
+    nest_qry = [result[0] for result in c.execute("SELECT Pokemon_Nest_Zone FROM Kanto_Nest WHERE Pokemon_Index = '{}'".format(sv_pokemon_index.get())).fetchall()]
+
+    if nest_qry[0] != '':
+        for item in nest_qry:
+            nest_list = nest_qry
+            nest_x = [x[0] for x in c.execute("SELECT Nest_X FROM Kanto_Zone WHERE Nest_Zone = '{}'".format(nest_list[id])).fetchall()]
+            nest_y = [y[0] for y in c.execute("SELECT Nest_Y FROM Kanto_Zone WHERE Nest_Zone = '{}'".format(nest_list[id])).fetchall()]
+            cnv.nest = nest_icn
+            cnv.create_image(nest_x, nest_y, image=nest_icn)
+            id += 1
+    else:
+        cnv.nest = area_unknown
+        cnv.create_image(35, 142, anchor=tk.NW, image=area_unknown)
+
+    while on:
+        if not cnv.winfo_exists():
+            break
+        if map_blink:
+            cnv.delete(map_blink)
+            map_blink = None
+        else:
+            map_blink = cnv.create_image(0, 25, anchor=tk.NW, image=map)
+
+        cnv.update()
+        sleep(0.5)
+
+    if map_blink and cnv.winfo_exists():
+        cnv.delete(map_blink)
 
 
 def destroy_canvas():
@@ -494,8 +961,7 @@ def destroy_canvas():
     display(index)
 
 
-# AUDIO ENGINE -------------------------------------
-
+#  AUDIO ENGINE -------------------------------------
 
 def music_toggle(event):
     global music_playing, icn_m_toggle
@@ -520,9 +986,15 @@ def stop_music():
     pygame.mixer.music.stop()
 
 
-# USER INTERFACE ------------------------------
+#  MISC ----------------------------------------
 
-# POKEMON DATA DISPLAY ------------------------
+def missingno():
+    pass
+
+
+#  USER INTERFACE ------------------------------
+
+#  POKEMON DATA DISPLAY ------------------------
 
 pokemon_name = tkb.Label(root, textvariable=sv_pokemon_name, font=('Pokémon Red/Blue/Green/Yellow Edition Font', 30))
 pokemon_name.place(x=175, y=5)
@@ -581,7 +1053,7 @@ separator2_sprite.image = separator_imgpi
 separator2_sprite.place(x=0, y=275)
 
 
-# OPTIONS, SEARCH & NAVIGATION -------------------------
+#  OPTIONS, SEARCH & NAVIGATION -------------------------
 
 icn_m_toggle = tkb.Label(root, image=icn_m_toggle_src)
 icn_m_toggle.place(x=10, y=10, width=24, height=24)
@@ -612,7 +1084,7 @@ btn_zone.place(x=270, y=333)
 btn_zone.bind("<Button-1>", show_zone)
 
 
-# MAIN ----------------------------------------
+#  MAIN ----------------------------------------
 
 if __name__ == '__main__':
     play_music()

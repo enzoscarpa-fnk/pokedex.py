@@ -1,4 +1,6 @@
-pokenest = [('001', ''),
+import sqlite3
+
+"""pokenest = [('001', ''),
             ('002', ''),
             ('003', ''),
             ('004', ''),
@@ -360,18 +362,80 @@ pokenest = [('001', ''),
             ('148', ''),
             ('149', ''),
             ('150', ''),
-            ('151', '')]
+            ('151', '')]"""
 
 
-# DATABASE CREATION ----------------------------
+pokezone = [('Cave_Taupiqueur', '97', '104'),
+            ('Centrale', '307', '104'),
+            ('Foret_de_Jade', '79', '104'),
+            ('Grotte', '289', '87'),
+            ('Grotte_Inconnue', '202', '52'),
+            ('Iles_Ecume', '132', '297'),
+            ('Manoir_Pokemon', '79', '297'),
+            ('Mont_Selenite', '149', '69'),
+            ('Parc_Safari', '184', '244'),
+            ('Route_1', '79', '209'),
+            ('Route_2', '79', '139'),
+            ('Route_3', '114', '87'),
+            ('Route_4', '184', '69'),
+            ('Route_5', '219', '87'),
+            ('Route_6', '219', '174'),
+            ('Route_7', '184', '122'),
+            ('Route_8', '272', '122'),
+            ('Route_9', '272', '69'),
+            ('Route_10', '289', '104'),
+            ('Route_11', '254', '192'),
+            ('Route_12', '289', '192'),
+            ('Route_13', '272', '227'),
+            ('Route_14', '237', '244'),
+            ('Route_15', '219', '262'),
+            ('Route_16', '132', '122'),
+            ('Route_17', '114', '174'),
+            ('Route_18', '149', '262'),
+            ('Chenal_19', '149', '297'),
+            ('Chenal_20', '114', '297'),
+            ('Chenal_21', '79', '262'),
+            ('Route_22', '79', '174'),
+            ('Route_23', '79', '139'),
+            ('Route_24', '219', '52'),
+            ('Route_25', '237', '34'),
+            ('Route_Victoire', '79', '104'),
+            ('Tour_Pokemon', '307', '122')]
+
+
+#  DATABASE CREATION ----------------------------
 
 db = sqlite3.connect('pokedex.db')
 c = db.cursor()
 
-c.execute("""CREATE TABLE Kanto_Nest (
-    PK_Index INTEGER PRIMARY KEY AUTOINCREMENT,
-    Pokemon_Index TEXT,
-    Pokemon_Nest_Zone TEXT
-);""")
+#  NESTS / WHERE DO POKEMON POP -------------------------------------------------
 
-c.executemany('INSERT INTO Kanto_Nest (Pokemon_Index, Pokemon_Nest_Zone) VALUES (?,?)', pokenest)
+#c.execute("""CREATE TABLE Kanto_Nest (
+#    PK_Index INTEGER PRIMARY KEY AUTOINCREMENT,
+#    Pokemon_Index TEXT,
+#    Pokemon_Nest_Zone TEXT
+#);""")
+
+#c.executemany('INSERT INTO Kanto_Nest (Pokemon_Index, Pokemon_Nest_Zone) VALUES (?,?)', pokenest)
+
+c.execute("SELECT DISTINCT Pokemon_Nest_Zone FROM Kanto_Nest ORDER BY Pokemon_Nest_Zone ASC")
+nests = c.fetchall()
+
+
+#  ZONES / WHERE DO ZONES SITS ON THE MAP ---------------------------------------
+
+#c.execute("""CREATE TABLE Kanto_Zone (
+#    ZN_Index INTEGER PRIMARY KEY AUTOINCREMENT,
+#    Nest_Zone TEXT,
+#    Nest_X TEXT,
+#    Nest_Y TEXT
+#);""")
+
+#c.executemany('INSERT INTO Kanto_Zone (Nest_Zone, Nest_X, Nest_Y) VALUES (?,?,?)', pokezone)
+#db.commit()
+
+c.execute("SELECT DISTINCT Nest_Zone, Nest_X, Nest_Y FROM Kanto_Zone")
+zones = c.fetchall()
+
+print("registred nests:", nests)
+print("registred zones:", zones)
