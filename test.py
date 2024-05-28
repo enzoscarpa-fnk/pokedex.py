@@ -1,7 +1,7 @@
 """
 Pokédex
 __author__ = 'FNK'
-__version__ = '0.6'
+__version__ = '0.7'
 """
 
 import sqlite3
@@ -13,6 +13,7 @@ import pyglet
 from time import sleep
 from tkinter import *
 from PIL import Image, ImageTk
+from random import randrange, randint
 
 
 #  POKEMON VALUES FOR DATABASE --------------------
@@ -563,11 +564,11 @@ pokezone = [('Cave_Taupiqueur', '97', '104'),
             ('Chenal_19', '149', '297'),
             ('Chenal_20', '114', '297'),
             ('Chenal_21', '79', '262'),
-            ('Route_22', '79', '174'),
-            ('Route_23', '79', '139'),
+            ('Route_22', '43', '174'),
+            ('Route_23', '43', '139'),
             ('Route_24', '219', '52'),
             ('Route_25', '237', '34'),
-            ('Route_Victoire', '79', '104'),
+            ('Route_Victoire', '43', '104'),
             ('Tour_Pokemon', '307', '122')]"""
 
 
@@ -641,7 +642,7 @@ for rows in data:
 
 index = rows_nb
 current_index = 0
-sv_search = tkb.StringVar(value="")
+sv_search = tkb.StringVar(value="MISSINGNO")
 sv_pokemon_index = tkb.StringVar(value="001")
 sv_pokemon_name = tkb.StringVar(value="BULBIZARRE")
 sv_pokemon_category = tkb.StringVar(value="GRAINE")
@@ -657,6 +658,8 @@ current_page = 1
 
 display_area = 0
 
+mn_mode = 0
+
 music_playing = 1
 
 icn_up = PhotoImage(file=r'src/sprites/up.png')
@@ -668,6 +671,12 @@ icn_search = PhotoImage(file=r'src/sprites/search.png')
 nest_icn = PhotoImage(file="src/sprites/nest.png")
 map = PhotoImage(file="src/sprites/map.png")
 area_unknown = PhotoImage(file="src/sprites/area_unknown.png")
+b000 = PhotoImage(file="src/sprites/missingno.png")
+b000_0 = PhotoImage(file="src/sprites/b000_0.png")
+b000_1 = PhotoImage(file="src/sprites/b000_1.png")
+b000_2 = PhotoImage(file="src/sprites/b000_2.png")
+b000_3 = PhotoImage(file="src/sprites/b000_3.png")
+b000_4 = PhotoImage(file="src/sprites/b000_4.png")
 separator_img = Image.open('src/sprites/separator.png')
 separator_imgsize = separator_img.resize((350, 14))
 separator_imgpi = ImageTk.PhotoImage(separator_imgsize)
@@ -682,48 +691,71 @@ def caps(event):
 
 
 def key_return(event):
-    search()
+    global mn_mode
+    if mn_mode == 1:
+        pass
+    else:
+        search()
 
 
 def key_esc(event):
-    global on
-    on = 0
-    destroy_canvas()
+    global on, mn_mode
+    if mn_mode == 1:
+        pass
+    else:
+        on = 0
+        destroy_canvas()
 
 
 def key_left(event):
-    if display_area == 0:
-        go_previous()
-    else:
+    global mn_mode
+    if mn_mode == 1:
         pass
+    else:
+        if display_area == 0:
+            go_previous()
+        else:
+            pass
 
 
 def key_right(event):
-    if display_area == 0:
-        go_next()
-    else:
+    global mn_mode
+    if mn_mode == 1:
         pass
+    else:
+        if display_area == 0:
+            go_next()
+        else:
+            pass
 
 
 def key_down(event):
-    if display_area == 0:
-        if current_page == 1:
-            if sv_pokemon_description_p2.get() != "":
-                destroy_btn_down()
-                display_page(2)
-            else:
-                pass
-    else:
+    global mn_mode
+    if mn_mode == 1:
         pass
+    else:
+        if display_area == 0:
+            if current_page == 1:
+                if sv_pokemon_description_p2.get() != "":
+                    destroy_btn_down()
+                    display_page(2)
+                else:
+                    pass
+        else:
+            pass
 
 
 def key_up(event):
-    if display_area == 0:
-        if current_page == 2:
-            destroy_btn_up()
-            display_page(1)
-    else:
+    global mn_mode
+    if mn_mode == 1:
         pass
+    else:
+        if display_area == 0:
+            if current_page == 2:
+                destroy_btn_up()
+                display_page(1)
+        else:
+            pass
 
 
 #  DESCRIPTION HANDLING --------------------------
@@ -989,7 +1021,39 @@ def stop_music():
 #  MISC ----------------------------------------
 
 def missingno():
-    pass
+    global cnv, mn_mode
+    mn_mode = 1
+    bug_mode = None
+    spriterand = [b000_0, b000_1, b000_2, b000_3, b000_4]
+
+    cnv = Canvas(root, width=350, height=385)
+    cnv.pack()
+
+    cnv.b000 = b000
+    cnv.create_image(0, 0, anchor=NW, image=b000)
+    placeholdersprite = tkb.Label(root, image=b000_0)
+    placeholdersprite.place(x=45, y=14)
+
+    try:
+        while mn_mode:
+            if not root.winfo_exists():
+                break
+            if bug_mode:
+                bug_mode.destroy()
+                bug_mode = None
+            else:
+                bug_mode = tkb.Label(root, image=spriterand[randint(0, 4)])
+                bug_mode.place(x=45, y=14)
+
+            cnv.update()
+            sleep(randrange(0, 3))
+            cnv.update()
+
+        if bug_mode and root.winfo_exists():
+            bug_mode.destroy()
+
+    except TclError:
+        pass
 
 
 #  USER INTERFACE ------------------------------
