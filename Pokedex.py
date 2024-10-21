@@ -1,9 +1,10 @@
 """
 Pokédex
 __author__ = 'FNK'
-__version__ = '0.7'
+__version__ = '0.7b'
 """
 
+import sys
 import sqlite3
 import ttkbootstrap as tkb
 import tkinter as tk
@@ -621,15 +622,24 @@ c = db.cursor()
 
 #  TKINTER CONFIGURATION -----------------------
 
+if sys.platform == "win32":
+    scale_factor = 0.9  # Adjust scaling for Windows
+else:
+    scale_factor = 1.0
+
 root = tkb.Window(title='Pokédex', resizable=(tkb.NO, tkb.NO))
-#root.geometry("350x370+1000+150") #definitive
-root.geometry("350x385+1000+150") #temporary
+root.tk.call('tk', 'scaling', scale_factor)
+root.geometry("350x385+500+150")
 
 ico = Image.open('src/sprites/appicon.png')
 appicon = ImageTk.PhotoImage(ico)
 root.wm_iconphoto(False, appicon)
 
 pyglet.font.add_file('src/pokemon.ttf')
+
+default_font = ('Helvetica', 10)
+root.option_add("*TLabel.Font", default_font)
+root.option_add("*TButton.Font", default_font)
 
 
 #  VARIABLES -------------------------------------
@@ -642,7 +652,7 @@ for rows in data:
 
 index = rows_nb
 current_index = 0
-sv_search = tkb.StringVar(value="MISSINGNO")
+sv_search = tkb.StringVar(value="")
 sv_pokemon_index = tkb.StringVar(value="001")
 sv_pokemon_name = tkb.StringVar(value="BULBIZARRE")
 sv_pokemon_category = tkb.StringVar(value="GRAINE")
@@ -1018,13 +1028,32 @@ def stop_music():
     pygame.mixer.music.stop()
 
 
+def play_music_missingno():
+    bg_music = 'src/sound/missingno.wav'
+    pygame.mixer.music.stop()
+    pygame.mixer.init()
+    pygame.mixer.music.load(open(bg_music))
+    pygame.mixer.music.play(-1)
+
+
 #  MISC ----------------------------------------
+
+def instruct_popup(msg):
+    popup = tk.Tk()
+    popup.wm_title("Manuel d'instructions du Pokédex")
+    label = tkb.Label(popup, text=msg, font=('Pokémon Red/Blue/Green/Yellow Edition Font', 20))
+    label.pack(side="top", fill="x", pady=10)
+    b1 = tkb.Button(popup, text="Okay", command = popup.destroy)
+    b1.pack()
+    popup.mainloop()
+
 
 def missingno():
     global cnv, mn_mode
     mn_mode = 1
     bug_mode = None
     spriterand = [b000_0, b000_1, b000_2, b000_3, b000_4]
+    play_music_missingno()
 
     cnv = Canvas(root, width=350, height=385)
     cnv.pack()
@@ -1152,4 +1181,5 @@ btn_zone.bind("<Button-1>", show_zone)
 
 if __name__ == '__main__':
     play_music()
+    instruct_popup("  Commandes clavier du Pokédex:\n\n< | >: Pokémon suiv. | préc.\n^ | v: Desc page suiv. | préc.\nEscape: Quitter affichage carte\nEnter: Valider recherche Pokémon\n\n########## EASTER EGG ##########\nRechercher le Pokémon MISSINGNO\nlance un mode simulant un glitch\nd'affichage du Pokédex. Une fois\nentré dans ce mode, il est\nnécessaire de relancer le Pokédex\npour pouvoir l'utiliser à nouveau\nnormalement, comme lorsqu'il\nfallait redémarrer la GameBoy\nquand le jeu glitchait.\n\n         Bon amusement!\n\n      Pokédex GEN I by FNK\nhttps://github.com/enzoscarpa-fnk")
     root.mainloop()  # Start of program
